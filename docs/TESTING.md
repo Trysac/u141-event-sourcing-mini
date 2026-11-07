@@ -1,20 +1,9 @@
 # Testing
 
-## Running
+Tests are located in `tests/` and cover all contract requirements for both `InMemoryEventStore` and `SqliteEventStore`.
 
-```sh
-uv run pytest --cov=event_sourcing_mini   # tests with coverage report
-uv run python scripts/check.py      # every gate, as CI and the factory run it
-```
-
-## Policy
-
-- Branch coverage of `src/event_sourcing_mini` must stay at or above 80 %; the gate fails below it.
-- Tests exercise the public API (`import event_sourcing_mini`) and assert every observable effect:
-  return values, raised exceptions and their messages.
-- Each bug fix starts with a failing test that reproduces it.
-- Tests are deterministic: no network, no wall clock, no dependence on test order.
-
-## Layout
-
-`tests/test_<module>.py` mirrors each public module. Shared fixtures go in `tests/conftest.py`.
+- `test_acceptance_1_and_concurrency_conflict`: Validates version checking and concurrency exceptions.
+- `test_acceptance_2_expected_version_none_and_read_from_version`: Confirms basic append and version-based reading.
+- `test_acceptance_3_positions_global_and_read_all`: Verifies global order and position-based scanning.
+- `test_acceptance_4_projector_checkpoint`: Tests state aggregation and checkpointing.
+- `test_acceptance_all`: Integration tests for snapshots and error condition handling (e.g., event size, max capacity, invalid data).

@@ -1,19 +1,15 @@
-# Security notes
+# Security
 
-## Threat model
+## Threat Model
 
-`trysac-event-sourcing-mini` is a pure library without I/O. The main risks are:
+### Defended
 
-- **Supply chain**: a compromised dependency or CI action. Mitigation: no runtime dependencies,
-  Dependabot weekly updates, actions pinned to major versions, minimal workflow permissions.
-- **Leaked secrets**: tokens committed by mistake. Mitigation: `gitleaks` runs in the local gates
-  and in CI; `.env` files are git-ignored.
-- **Untrusted input**: callers may pass hostile strings. Mitigation: validate input and fail with
-  explicit exceptions; never `eval`, `exec` or deserialize untrusted data.
+- **Injection**: Stream IDs are validated via regex `^[A-Za-z0-9_.:-]{1,200}$`.
+- **Resource Exhaustion**: `InMemoryEventStore` bounds storage to a configurable `max_events` limit; events are limited to a JSON-serialized size of 1,048,576 bytes.
+- **Data Corruption**: SQLite backends utilize `BEGIN IMMEDIATE` transactions to prevent write interleaving; JSON serialization forbids `NaN` and `Infinity` (via `allow_nan=False`).
+- **Information Disclosure**: Error messages truncate inputs to 200 characters and never expose database connection details.
 
-## Publishing
+### Not Defended
 
-Releases are published to PyPI with trusted publishing (OIDC) when available, never with a
-long-lived token stored in the repository.
-
-To report a vulnerability, see [SECURITY.md](../SECURITY.md).
+- **Persistence Integrity**: If the external SQLite file is modified by an unauthorized process outside of this library, the event stream integrity cannot be guaranteed.
+- **Memory/Disk Availability**: The library assumes the host system has sufficient disk/memory to handle the database file or in-memory store; it does not implement OS-level rate limiting or quota enforcement.
