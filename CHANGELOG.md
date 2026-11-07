@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add minimal event sourcing engine with in-memory and SQLite stores, optimistic concurrency, global projections, and snapshots
 - Initial project structure from the factory utility template.
