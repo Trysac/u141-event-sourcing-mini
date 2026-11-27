@@ -4,8 +4,10 @@ Teams trying event sourcing either adopt a heavy framework or write an events ta
 
 ## Installation
 
+Not published to PyPI yet. Install it from GitHub:
+
 ```bash
-pip install event-sourcing-mini
+pip install "git+https://github.com/Trysac/u141-event-sourcing-mini"
 ```
 
 ## Usage
